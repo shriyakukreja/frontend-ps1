@@ -1,122 +1,141 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from "react";
+import axios from "axios";
+import { useDropzone } from "react-dropzone";
+
+import creative from "./templates/creative.html?raw";
+import professional from "./templates/professional.html?raw";
+
+import { fillTemplate } from "./utils/fillTemplate";
+import { downloadPortfolio } from "./utils/downloadPortfolio";
+
+const BACKEND_URL = "http://localhost:5000"; // change to Railway URL later
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [file, setFile] = useState(null);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [templateType, setTemplateType] = useState("creative");
+
+  // Drag & drop
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: { "application/pdf": [".pdf"] },
+    onDrop: (acceptedFiles) => {
+      setFile(acceptedFiles[0]);
+    }
+  });
+
+  // Upload to backend
+  const handleUpload = async () => {
+    if (!file) return alert("Upload a PDF first");
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post(
+        `${BACKEND_URL}/api/upload`,
+        formData
+      );
+
+      // Expecting: { success: true, data: {...} }
+      setData(res.data.data);
+
+    } catch (err) {
+      console.error(err);
+      alert("Backend not working yet. Using dummy data.");
+
+      // fallback so demo still works
+      setData({
+        name: "Demo User",
+        summary: "Generated from resume",
+        skills: ["React", "Node", "Python"],
+        projects: [
+          { title: "Project", description: "Demo project" }
+        ],
+        education: [
+          { degree: "BTech", college: "University" }
+        ],
+        experience: [
+          { role: "Intern", company: "Company" }
+        ]
+      });
+
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pick template
+  const template =
+    templateType === "creative" ? creative : professional;
+
+  const html = data ? fillTemplate(template, data) : "";
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
+    <div style={{ padding: "30px" }}>
+      {/* ---------- UPLOAD SCREEN ---------- */}
+      {!data && (
         <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+          <h1>Upload Resume</h1>
 
-      <div className="ticks"></div>
+          <div
+            {...getRootProps()}
+            style={{
+              border: "2px dashed #ccc",
+              padding: "40px",
+              marginTop: "20px",
+              cursor: "pointer"
+            }}
+          >
+            <input {...getInputProps()} />
+            <p>Drag & drop PDF here or click</p>
+          </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+          {file && <p>Selected: {file.name}</p>}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+          <button onClick={handleUpload} disabled={loading}>
+            {loading ? "Processing..." : "Generate Portfolio"}
+          </button>
+        </div>
+      )}
+
+      {/* ---------- PREVIEW SCREEN ---------- */}
+      {data && (
+        <div>
+          <h2>Preview</h2>
+
+          {/* Template Switch */}
+          <select
+            value={templateType}
+            onChange={(e) => setTemplateType(e.target.value)}
+          >
+            <option value="creative">Creative</option>
+            <option value="professional">Professional</option>
+          </select>
+
+          {/* Download */}
+          <button
+            onClick={() => downloadPortfolio(template, data)}
+          >
+            Download HTML
+          </button>
+
+          {/* Preview */}
+          <iframe
+            srcDoc={html}
+            style={{
+              width: "100%",
+              height: "80vh",
+              border: "1px solid #ccc",
+              marginTop: "20px"
+            }}
+          />
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
