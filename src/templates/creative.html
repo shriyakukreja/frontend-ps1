@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{name}} — Portfolio</title>
+  <title>Portfolio</title>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -429,7 +429,7 @@
 
 <!-- ─── NAV ───────────────────────────────────── -->
 <nav>
-  <div class="nav-logo">{{name}}</div>
+  <div class="nav-logo" id="name"></div>
   <ul class="nav-links">
     <li><a href="#skills">Skills</a></li>
     <li><a href="#projects">Projects</a></li>
@@ -447,7 +447,7 @@
     </div>
 
     <h1 class="hero-name">
-      <span class="accent">{{name}}</span>
+      <span class="accent" id="name"></span>
     </h1>
 
     <div class="hero-cta">
@@ -459,7 +459,7 @@
   <div class="hero-right">
     <div class="summary-box">
       <div class="summary-label">About Me</div>
-      <p class="summary-text">{{summary}}</p>
+      <p class="summary-text" id="summary"></p>
     </div>
   </div>
 </section>
@@ -471,9 +471,7 @@
 
   <div class="skills-grid">
     <div class="reveal">
-      <div class="pills">
-        {{skills}}
-      </div>
+      <div class="pills" id="skillsContainer"></div>
     </div>
   </div>
 </section>
@@ -483,9 +481,7 @@
   <div class="section-tag">Projects</div>
   <h2 class="section-title">Things I've <em>Built</em></h2>
 
-  <div class="projects-grid">
-    {{projects}}
-  </div>
+  <div class="projects-grid" id="projectsContainer"></div>
 </section>
 
 <!-- ─── EDUCATION + EXPERIENCE ─────────────────── -->
@@ -498,17 +494,13 @@
     <!-- EDUCATION -->
     <div>
       <div class="skill-group-label" style="margin-bottom:28px;">Education</div>
-      <div class="timeline">
-        {{education}}
-      </div>
+      <div class="timeline" id="educationContainer"></div>
     </div>
 
     <!-- EXPERIENCE -->
     <div id="experience">
       <div class="skill-group-label" style="margin-bottom:28px;">Experience</div>
-      <div class="timeline">
-        {{experience}}
-      </div>
+      <div class="timeline" id="experienceContainer"></div>
     </div>
   </div>
 </section>
@@ -542,7 +534,7 @@
   </div>
 
   <p style="margin-top:56px; font-size:0.75rem; color:rgba(255,255,255,0.25); letter-spacing:0.05em;">
-    © {{name}} · Built with ✦ and strong coffee
+    © <span class="footer-name"></span> · Built with ✦ and strong coffee
   </p>
 </section>
 

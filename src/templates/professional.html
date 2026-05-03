@@ -121,16 +121,16 @@
 
   <!-- Hero Section -->
   <section>
-    <h1>John Doe</h1>
-    <p class="email">john.doe@email.com</p>
-    <p class="summary">Passionate software developer with experience in web development and AI applications. Always eager to learn new technologies and solve complex problems.</p>
+    <h1 id="name">John Doe</h1>
+    <p class="email" id="email">john.doe@email.com</p>
+    <p class="summary" id="summary">Passionate software developer with experience in web development and AI applications. Always eager to learn new technologies and solve complex problems.</p>
   </section>
 
   <!-- Skills -->
   <section class="section">
     <h2>Skills</h2>
 
-    <div class="skills-container">
+    <div class="skills-container" id="skillsContainer">
       <span class="skill-tag">JavaScript</span>
       <span class="skill-tag">React</span>
       <span class="skill-tag">Node.js</span>
@@ -142,7 +142,7 @@
   <section class="section">
     <h2>Projects</h2>
 
-    <div class="projects-grid">
+    <div class="projects-grid" id="projectsContainer">
       <div class="project-card">
         <h3>AI Study Planner</h3>
         <p>A smart planner for students using AI scheduling.</p>
@@ -168,25 +168,29 @@
   <!-- Education -->
   <section class="section">
     <h2>Education</h2>
-    <div class="row-item">
-      <h3>Bachelor of Computer Science</h3>
-      <p>University Name • 2020-2024</p>
-      <p>GPA: 3.8/4.0</p>
+    <div id="educationContainer">
+      <div class="row-item">
+        <h3>Bachelor of Computer Science</h3>
+        <p>University Name • 2020-2024</p>
+        <p>GPA: 3.8/4.0</p>
+      </div>
     </div>
   </section>
 
   <!-- Experience -->
   <section class="section">
     <h2>Experience</h2>
-    <div class="row-item">
-      <h3>Software Developer Intern</h3>
-      <p>Tech Company • Summer 2023</p>
-      <p>Developed web applications using React and Node.js, collaborated with team on agile projects.</p>
-    </div>
-    <div class="row-item">
-      <h3>Freelance Developer</h3>
-      <p>Self-employed • 2022-Present</p>
-      <p>Built mobile apps and websites for small businesses using React Native and Firebase.</p>
+    <div id="experienceContainer">
+      <div class="row-item">
+        <h3>Software Developer Intern</h3>
+        <p>Tech Company • Summer 2023</p>
+        <p>Developed web applications using React and Node.js, collaborated with team on agile projects.</p>
+      </div>
+      <div class="row-item">
+        <h3>Freelance Developer</h3>
+        <p>Self-employed • 2022-Present</p>
+        <p>Built mobile apps and websites for small businesses using React Native and Firebase.</p>
+      </div>
     </div>
   </section>
 
