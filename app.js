@@ -3,7 +3,7 @@
    Works with both professional.html & creative.html
    ───────────────────────────────────────────── */
  
-const API_ENDPOINT = "/api/upload";
+const API_ENDPOINT = "https://hack-backend-zl1d.onrender.com/";
  
 /* ── DOM refs ─────────────────────────────── */
 const resumeInput       = document.getElementById("resumeInput");
