@@ -8,7 +8,7 @@ import professional from "./templates/professional.html?raw";
 import { fillTemplate } from "./utils/fillTemplate";
 import { downloadPortfolio } from "./utils/downloadPortfolio";
 
-const BACKEND_URL = "https://hack-backend-zl1d.onrender.com/"; // change to Railway URL later
+const BACKEND_URL = "https://hack-backend-zl1d.onrender.com"; // change to Railway URL later
 
 function App() {
   const [file, setFile] = useState(null);
@@ -35,7 +35,7 @@ function App() {
       setLoading(true);
 
       const res = await axios.post(
-        `${BACKEND_URL}api/upload`,
+        `${BACKEND_URL}/api/upload`,
         formData
       );
 
