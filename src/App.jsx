@@ -35,7 +35,7 @@ function App() {
       setLoading(true);
 
       const res = await axios.post(
-        `${BACKEND_URL}/api/upload`,
+        `${BACKEND_URL}api/upload`,
         formData
       );
 
