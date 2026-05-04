@@ -3,7 +3,7 @@
    Works with both professional.html & creative.html
    ───────────────────────────────────────────── */
  
-const API_ENDPOINT = "https://hack-backend-zl1d.onrender.com/";
+const API_ENDPOINT = "https://hack-backend-zl1d.onrender.com/api/upload";
  
 /* ── DOM refs ─────────────────────────────── */
 const resumeInput       = document.getElementById("resumeInput");
@@ -54,7 +54,7 @@ async function uploadResume(file) {
     }
  
     const data = await res.json();
-    injectData(data);
+    injectData(data.structuredData);
     smoothReveal();
   } catch (err) {
     showError(err.message || "Something went wrong. Please try again.");
