@@ -15,14 +15,14 @@ const errorMessage      = document.getElementById("errorMessage");
 /* ── Upload button click ──────────────────── */
 if (uploadBtn) {
   uploadBtn.addEventListener("click", () => {
-    if (resumeInput) resumeInput.click();
+    resumeInput?.click();
   });
 }
 
 /* ── File selected → trigger upload ──────── */
 if (resumeInput) {
   resumeInput.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
 
     if (file.type !== "application/pdf") {
@@ -48,36 +48,41 @@ async function uploadResume(file) {
       body: formData,
     });
 
-    // 🔥 HANDLE NON-OK RESPONSES PROPERLY
+    // 🔥 NETWORK FAILURE HANDLING
+    if (!res) throw new Error("No response from server");
+
+    // 🔥 HANDLE HTTP ERRORS
     if (!res.ok) {
       let errText = "Server error";
       try {
         const errData = await res.json();
         errText = errData.error || errData.message || errText;
       } catch {}
-      throw new Error(errText + ` (status: ${res.status})`);
+      throw new Error(`${errText} (status: ${res.status})`);
     }
 
-    // 🔥 HANDLE INVALID JSON SAFELY
+    // 🔥 SAFE JSON PARSE
     let data;
     try {
       data = await res.json();
-    } catch (e) {
-      throw new Error("Invalid response from server");
+    } catch {
+      throw new Error("Invalid JSON response from backend");
     }
 
     console.log("✅ Backend response:", data);
 
-    // 🔥 SAFETY CHECK (VERY IMPORTANT)
-    if (!data || !data.structuredData) {
-      throw new Error("Backend did not return structured data");
+    // 🔥 FIX: handle BOTH possible backend shapes safely
+    const structured = data?.structuredData || data;
+
+    if (!structured || typeof structured !== "object") {
+      throw new Error("Backend returned empty or invalid structured data");
     }
 
-    injectData(data.structuredData);
+    injectData(structured);
     smoothReveal();
 
   } catch (err) {
-    console.error("❌ Upload failed:", err.message);
+    console.error("❌ Upload failed:", err);
     showError(err.message || "Something went wrong. Please try again.");
   } finally {
     showLoading(false);
@@ -91,8 +96,8 @@ function injectData(data) {
     return;
   }
 
-  setText("name",    data.name    || "");
-  setText("email",   data.email   || "");
+  setText("name", data.name || "");
+  setText("email", data.email || "");
   setText("summary", data.summary || "");
 
   const navLogo = document.querySelector(".nav-logo");
