@@ -8,7 +8,7 @@ import professional from "./templates/professional.html?raw";
 import { fillTemplate } from "./utils/fillTemplate";
 import { downloadPortfolio } from "./utils/downloadPortfolio";
 
-const BACKEND_URL = "https://hack-backend-zl1d.onrender.com"; // change to Railway URL later
+const BACKEND_URL = "https://hack-backend-zl1d.onrender.com";
 
 function App() {
   const [file, setFile] = useState(null);
@@ -16,7 +16,6 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [templateType, setTemplateType] = useState("creative");
 
-  // Drag & drop
   const { getRootProps, getInputProps } = useDropzone({
     accept: { "application/pdf": [".pdf"] },
     onDrop: (acceptedFiles) => {
@@ -24,7 +23,6 @@ function App() {
     }
   });
 
-  // Upload to backend
   const handleUpload = async () => {
     if (!file) return alert("Upload a PDF first");
 
@@ -39,26 +37,35 @@ function App() {
         formData
       );
 
-      // Expecting: { success: true, data: {...} }
-      setData(res.data.data);
+      console.log("Backend response:", res.data);
+
+      // ✅ FIXED: correct backend key
+      const parsedData = res.data.structuredData;
+
+      if (!parsedData) {
+        throw new Error("No structured data returned from backend");
+      }
+
+      setData(parsedData);
 
     } catch (err) {
-      console.error(err);
-      alert("Backend not working yet. Using dummy data.");
+      console.error("UPLOAD ERROR:", err);
 
-      // fallback so demo still works
+      alert("Backend failed — using dummy data");
+
       setData({
         name: "Demo User",
+        email: "demo@email.com",
         summary: "Generated from resume",
         skills: ["React", "Node", "Python"],
         projects: [
-          { title: "Project", description: "Demo project" }
+          { title: "Project", description: "Demo project", tech: [] }
         ],
         education: [
-          { degree: "BTech", college: "University" }
+          { degree: "BTech", college: "University", year: "2025" }
         ],
         experience: [
-          { role: "Intern", company: "Company" }
+          { role: "Intern", company: "Company", duration: "2024", points: [] }
         ]
       });
 
@@ -67,7 +74,6 @@ function App() {
     }
   };
 
-  // Pick template
   const template =
     templateType === "creative" ? creative : professional;
 
@@ -75,6 +81,7 @@ function App() {
 
   return (
     <div style={{ padding: "30px" }}>
+
       {/* ---------- UPLOAD SCREEN ---------- */}
       {!data && (
         <div>
@@ -106,7 +113,6 @@ function App() {
         <div>
           <h2>Preview</h2>
 
-          {/* Template Switch */}
           <select
             value={templateType}
             onChange={(e) => setTemplateType(e.target.value)}
@@ -115,14 +121,10 @@ function App() {
             <option value="professional">Professional</option>
           </select>
 
-          {/* Download */}
-          <button
-            onClick={() => downloadPortfolio(template, data)}
-          >
+          <button onClick={() => downloadPortfolio(template, data)}>
             Download HTML
           </button>
 
-          {/* Preview */}
           <iframe
             srcDoc={html}
             style={{
